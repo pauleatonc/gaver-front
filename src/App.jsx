@@ -5,6 +5,7 @@ import { CssBaseline } from '@mui/material';
 import LandingPage from './pages/LandingPage';
 import SignIn from './components/sign-in/SignIn';
 import SignUp from './components/sign-up/SignUp';
+import Checkout from './components/checkout/Checkout';
 import { AuthProvider } from './contexts/AuthContext';
 import './App.css';
 
@@ -23,6 +24,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/sign-up" element={<SignUp />} />
+            <Route path="/checkout" element={<Checkout />} />
             {/* Aquí puedes agregar más rutas en el futuro */}
             {/* <Route path="/dashboard" element={<DashboardPage />} /> */}
           </Routes>

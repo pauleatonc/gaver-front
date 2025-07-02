@@ -7,23 +7,23 @@ import Typography from '@mui/material/Typography';
 
 const products = [
   {
-    name: 'Professional plan',
-    desc: 'Monthly subscription',
+    name: 'Plan Profesional',
+    desc: 'Suscripción mensual',
     price: '$15.00',
   },
   {
-    name: 'Dedicated support',
-    desc: 'Included in the Professional plan',
-    price: 'Free',
+    name: 'Soporte dedicado',
+    desc: 'Incluido en el Plan Profesional',
+    price: 'Gratis',
   },
   {
     name: 'Hardware',
-    desc: 'Devices needed for development',
+    desc: 'Dispositivos necesarios para el desarrollo',
     price: '$69.99',
   },
   {
-    name: 'Landing page template',
-    desc: 'License',
+    name: 'Plantilla de página de inicio',
+    desc: 'Licencia',
     price: '$49.99',
   },
 ];

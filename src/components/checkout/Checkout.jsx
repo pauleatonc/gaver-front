@@ -16,19 +16,22 @@ import AddressForm from './components/AddressForm';
 import Info from './components/Info';
 import InfoMobile from './components/InfoMobile';
 import PaymentForm from './components/PaymentForm';
+import BuyForm from './components/BuyForm';
 import Review from './components/Review';
 import SitemarkIcon from './components/SitemarkIcon';
-import AppTheme from '../shared-theme/AppTheme';
-import ColorModeIconDropdown from '../shared-theme/ColorModeIconDropdown';
+import AppTheme from '../../shared-theme/AppTheme';
+import ColorModeIconDropdown from '../../shared-theme/ColorModeIconDropdown';
 
-const steps = ['Shipping address', 'Payment details', 'Review your order'];
+const steps = ['Detalle de compra', 'Dirección de Facturación', 'Detalles de pago', 'Revisar tu pedido'];
 function getStepContent(step) {
   switch (step) {
     case 0:
-      return <AddressForm />;
+      return <BuyForm />;
     case 1:
-      return <PaymentForm />;
+      return <AddressForm />;
     case 2:
+      return <PaymentForm />;
+    case 3:
       return <Review />;
     default:
       throw new Error('Unknown step');
@@ -45,13 +48,13 @@ export default function Checkout(props) {
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
-      <Box sx={{ position: 'fixed', top: '1rem', right: '1rem' }}>
+      <Box sx={{ position: 'fixed', top: '1rem', right: '1rem', zIndex: 1000 }}>
         <ColorModeIconDropdown />
       </Box>
 
-      <Grid
-        container
+      <Box
         sx={{
+          display: { xs: 'block', sm: 'flex' },
           height: {
             xs: '100%',
             sm: 'calc(100dvh - var(--template-frame-height, 0px))',
@@ -62,18 +65,19 @@ export default function Checkout(props) {
           },
         }}
       >
-        <Grid
-          size={{ xs: 12, sm: 5, lg: 4 }}
+        <Box
           sx={{
-            display: { xs: 'none', md: 'flex' },
+            display: { xs: 'none', sm: 'flex' },
             flexDirection: 'column',
+            width: { sm: '40%', lg: '33%' },
             backgroundColor: 'background.paper',
-            borderRight: { sm: 'none', md: '1px solid' },
-            borderColor: { sm: 'none', md: 'divider' },
+            borderRight: { sm: '1px solid' },
+            borderColor: { sm: 'divider' },
             alignItems: 'start',
             pt: 16,
             px: 10,
             gap: 4,
+            minHeight: { sm: '100vh' },
           }}
         >
           <SitemarkIcon />
@@ -86,14 +90,14 @@ export default function Checkout(props) {
               maxWidth: 500,
             }}
           >
-            <Info totalPrice={activeStep >= 2 ? '$144.97' : '$134.98'} />
+            <Info totalPrice={activeStep >= 3 ? '$144.97' : '$134.98'} />
           </Box>
-        </Grid>
-        <Grid
-          size={{ sm: 12, md: 7, lg: 8 }}
+        </Box>
+        <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
+            flex: 1,
             maxWidth: '100%',
             width: '100%',
             backgroundColor: { xs: 'transparent', sm: 'background.default' },
@@ -101,6 +105,7 @@ export default function Checkout(props) {
             pt: { xs: 0, sm: 16 },
             px: { xs: 2, sm: 10 },
             gap: { xs: 4, md: 8 },
+            minHeight: { sm: '100vh' },
           }}
         >
           <Box
@@ -114,7 +119,7 @@ export default function Checkout(props) {
           >
             <Box
               sx={{
-                display: { xs: 'none', md: 'flex' },
+                display: { xs: 'none', sm: 'flex' },
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 alignItems: 'flex-end',
@@ -128,7 +133,7 @@ export default function Checkout(props) {
               >
                 {steps.map((label) => (
                   <Step
-                    sx={{ ':first-child': { pl: 0 }, ':last-child': { pr: 0 } }}
+                    sx={{ ':first-of-type': { pl: 0 }, ':last-of-type': { pr: 0 } }}
                     key={label}
                   >
                     <StepLabel>{label}</StepLabel>
@@ -137,7 +142,7 @@ export default function Checkout(props) {
               </Stepper>
             </Box>
           </Box>
-          <Card sx={{ display: { xs: 'flex', md: 'none' }, width: '100%' }}>
+          <Card sx={{ display: { xs: 'flex', sm: 'none' }, width: '100%' }}>
             <CardContent
               sx={{
                 display: 'flex',
@@ -148,13 +153,13 @@ export default function Checkout(props) {
             >
               <div>
                 <Typography variant="subtitle2" gutterBottom>
-                  Selected products
+                  Productos seleccionados
                 </Typography>
                 <Typography variant="body1">
-                  {activeStep >= 2 ? '$144.97' : '$134.98'}
+                  {activeStep >= 3 ? '$144.97' : '$134.98'}
                 </Typography>
               </div>
-              <InfoMobile totalPrice={activeStep >= 2 ? '$144.97' : '$134.98'} />
+              <InfoMobile totalPrice={activeStep >= 3 ? '$144.97' : '$134.98'} />
             </CardContent>
           </Card>
           <Box
@@ -172,13 +177,13 @@ export default function Checkout(props) {
               id="mobile-stepper"
               activeStep={activeStep}
               alternativeLabel
-              sx={{ display: { sm: 'flex', md: 'none' } }}
+              sx={{ display: { xs: 'flex', sm: 'none' } }}
             >
               {steps.map((label) => (
                 <Step
                   sx={{
-                    ':first-child': { pl: 0 },
-                    ':last-child': { pr: 0 },
+                    ':first-of-type': { pl: 0 },
+                    ':last-of-type': { pr: 0 },
                     '& .MuiStepConnector-root': { top: { xs: 6, sm: 12 } },
                   }}
                   key={label}
@@ -194,17 +199,17 @@ export default function Checkout(props) {
             {activeStep === steps.length ? (
               <Stack spacing={2} useFlexGap>
                 <Typography variant="h1">📦</Typography>
-                <Typography variant="h5">Thank you for your order!</Typography>
+                <Typography variant="h5">¡Gracias por tu pedido!</Typography>
                 <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                  Your order number is
-                  <strong>&nbsp;#140396</strong>. We have emailed your order
-                  confirmation and will update you once its shipped.
+                  Tu número de pedido es
+                  <strong>&nbsp;#140396</strong>. Hemos enviado la confirmación
+                  por email y te actualizaremos cuando se envíe.
                 </Typography>
                 <Button
                   variant="contained"
                   sx={{ alignSelf: 'start', width: { xs: '100%', sm: 'auto' } }}
                 >
-                  Go to my orders
+                  Ir a mis pedidos
                 </Button>
               </Stack>
             ) : (
@@ -234,7 +239,7 @@ export default function Checkout(props) {
                       variant="text"
                       sx={{ display: { xs: 'none', sm: 'flex' } }}
                     >
-                      Previous
+                      Anterior
                     </Button>
                   )}
                   {activeStep !== 0 && (
@@ -245,7 +250,7 @@ export default function Checkout(props) {
                       fullWidth
                       sx={{ display: { xs: 'flex', sm: 'none' } }}
                     >
-                      Previous
+                      Anterior
                     </Button>
                   )}
                   <Button
@@ -254,14 +259,14 @@ export default function Checkout(props) {
                     onClick={handleNext}
                     sx={{ width: { xs: '100%', sm: 'fit-content' } }}
                   >
-                    {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+                    {activeStep === steps.length - 1 ? 'Realizar pedido' : 'Siguiente'}
                   </Button>
                 </Box>
               </React.Fragment>
             )}
           </Box>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </AppTheme>
   );
 }
