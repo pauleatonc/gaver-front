@@ -1,27 +1,34 @@
-import React from 'react';
-import VideoPlayer from '../components/Landing/VideoPlayer';
-import PurchaseButton from '../components/Landing/PurchaseButton';
-import WelcomeMessage from '../components/Landing/WelcomeMessage';
-import './LandingPage.css';
+import * as React from 'react';
+import Divider from '@mui/material/Divider';
+import AppAppBar from '../components/Layout/AppAppBar';
+import Hero from '../components/Landing/Hero';
+import LogoCollection from '../components/Landing/LogoCollection';
+import Highlights from '../components/Landing/Highlights';
+import Pricing from '../components/Landing/Pricing';
+import Features from '../components/Landing/Features';
+import Testimonials from '../components/Landing/Testimonials';
+import FAQ from '../components/Landing/FAQ';
+import Footer from '../components/Layout/Footer';
 
-const LandingPage = () => {
-  const videoId = 'jWFxlRpcjd0';
-  const welcomeMessage = 'Bienvenidos a nuestra aplicación. Aquí puedes comprar y disfrutar de nuestro contenido.';
-
+export default function MarketingPage() {
   return (
-    <div className="landing-page text-center">
-      <VideoPlayer 
-        videoId={videoId}
-        title="YouTube video player"
-      />
-      
-      <PurchaseButton productId="default-product" />
-      
-      <WelcomeMessage message={welcomeMessage} />
-      
-      <PurchaseButton productId="default-product" />
-    </div>
+    <>
+      <AppAppBar />
+      <Hero />
+      <div>
+        <LogoCollection />
+        <Features />
+        <Divider />
+        <Testimonials />
+        <Divider />
+        <Highlights />
+        <Divider />
+        <Pricing />
+        <Divider />
+        <FAQ />
+        <Divider />
+        <Footer />
+      </div>
+    </>
   );
-};
-
-export default LandingPage; 
+}

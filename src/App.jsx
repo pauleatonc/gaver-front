@@ -1,44 +1,34 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
-import Layout from './components/Layout/Layout';
 import LandingPage from './pages/LandingPage';
+import SignIn from './components/sign-in/SignIn';
+import SignUp from './components/sign-up/SignUp';
 import { AuthProvider } from './contexts/AuthContext';
 import './App.css';
 
-// Crear tema personalizado
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#1976d2',
-    },
-    secondary: {
-      main: '#dc004e',
-    },
-  },
-  typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-  },
-});
-
 function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <CssVarsProvider>
       <CssBaseline />
       <AuthProvider>
-        <Router>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              {/* Aquí puedes agregar más rutas en el futuro */}
-              {/* <Route path="/login" element={<LoginPage />} /> */}
-              {/* <Route path="/dashboard" element={<DashboardPage />} /> */}
-            </Routes>
-          </Layout>
+        <Router
+          future={{
+            v7_startTransition: true,
+            v7_relativeSplatPath: true,
+          }}
+        >
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/sign-in" element={<SignIn />} />
+            <Route path="/sign-up" element={<SignUp />} />
+            {/* Aquí puedes agregar más rutas en el futuro */}
+            {/* <Route path="/dashboard" element={<DashboardPage />} /> */}
+          </Routes>
         </Router>
       </AuthProvider>
-    </ThemeProvider>
+    </CssVarsProvider>
   );
 }
 
