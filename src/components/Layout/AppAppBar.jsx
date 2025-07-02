@@ -10,10 +10,15 @@ import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import Drawer from '@mui/material/Drawer';
+import Menu from '@mui/material/Menu';
+import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ColorModeIconDropdown from '../../shared-theme/ColorModeIconDropdown';
 import Sitemark from '../Landing/SitemarkIcon';
+import { useAuthContext } from '../../contexts/AuthContext';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: 'flex',
@@ -33,7 +38,9 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 export default function AppAppBar() {
   const [open, setOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate = useNavigate();
+  const { isAuthenticated, user, logout } = useAuthContext();
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
@@ -45,6 +52,26 @@ export default function AppAppBar() {
 
   const handleSignUp = () => {
     navigate('/sign-up');
+  };
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleProfileMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    handleProfileMenuClose();
+    navigate('/');
+  };
+
+  const handleProfile = () => {
+    handleProfileMenuClose();
+    // Aquí puedes navegar al perfil del usuario
+    // navigate('/profile');
   };
 
   const scrollToSection = (sectionId) => {
@@ -61,6 +88,26 @@ export default function AppAppBar() {
     }
     // Cerrar el drawer móvil si está abierto
     setOpen(false);
+  };
+
+  const getUserDisplayName = () => {
+    if (!user) return 'Usuario';
+    if (user.first_name && user.last_name) {
+      return `${user.first_name} ${user.last_name}`;
+    }
+    if (user.first_name) return user.first_name;
+    if (user.username) return user.username;
+    return user.email;
+  };
+
+  const getUserInitials = () => {
+    if (!user) return 'U';
+    if (user.first_name && user.last_name) {
+      return `${user.first_name[0]}${user.last_name[0]}`.toUpperCase();
+    }
+    if (user.first_name) return user.first_name[0].toUpperCase();
+    if (user.username) return user.username[0].toUpperCase();
+    return user.email[0].toUpperCase();
   };
 
   return (
@@ -131,12 +178,76 @@ export default function AppAppBar() {
               alignItems: 'center',
             }}
           >
-            <Button color="primary" variant="text" size="small" onClick={handleSignIn}>
-              Sign in
-            </Button>
-            <Button color="primary" variant="contained" size="small" onClick={handleSignUp}>
-              Sign up
-            </Button>
+            {isAuthenticated ? (
+              <>
+                <Tooltip title="Perfil de usuario">
+                  <IconButton
+                    onClick={handleProfileMenuOpen}
+                    sx={{ ml: 2 }}
+                    aria-controls={anchorEl ? 'account-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={anchorEl ? 'true' : undefined}
+                  >
+                    <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
+                      {getUserInitials()}
+                    </Avatar>
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  anchorEl={anchorEl}
+                  id="account-menu"
+                  open={!!anchorEl}
+                  onClose={handleProfileMenuClose}
+                  onClick={handleProfileMenuClose}
+                  PaperProps={{
+                    elevation: 0,
+                    sx: {
+                      overflow: 'visible',
+                      filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                      mt: 1.5,
+                      '& .MuiAvatar-root': {
+                        width: 32,
+                        height: 32,
+                        ml: -0.5,
+                        mr: 1,
+                      },
+                      '&:before': {
+                        content: '""',
+                        display: 'block',
+                        position: 'absolute',
+                        top: 0,
+                        right: 14,
+                        width: 10,
+                        height: 10,
+                        bgcolor: 'background.paper',
+                        transform: 'translateY(-50%) rotate(45deg)',
+                        zIndex: 0,
+                      },
+                    },
+                  }}
+                  transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                  anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                >
+                  <MenuItem onClick={handleProfile}>
+                    <AccountCircleIcon sx={{ mr: 1 }} />
+                    {getUserDisplayName()}
+                  </MenuItem>
+                  <Divider />
+                  <MenuItem onClick={handleLogout}>
+                    Cerrar sesión
+                  </MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <>
+                <Button color="primary" variant="text" size="small" onClick={handleSignIn}>
+                  Iniciar sesión
+                </Button>
+                <Button color="primary" variant="contained" size="small" onClick={handleSignUp}>
+                  Registrarse
+                </Button>
+              </>
+            )}
             <ColorModeIconDropdown />
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1 }}>
@@ -172,16 +283,41 @@ export default function AppAppBar() {
                 <MenuItem onClick={() => scrollToSection('pricing')}>Pricing</MenuItem>
                 <MenuItem onClick={() => scrollToSection('faq')}>FAQ</MenuItem>
                 <Divider sx={{ my: 3 }} />
-                <MenuItem>
-                  <Button color="primary" variant="contained" fullWidth onClick={handleSignUp}>
-                    Sign up
-                  </Button>
-                </MenuItem>
-                <MenuItem>
-                  <Button color="primary" variant="outlined" fullWidth onClick={handleSignIn}>
-                    Sign in
-                  </Button>
-                </MenuItem>
+                
+                {isAuthenticated ? (
+                  <>
+                    <MenuItem>
+                      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                        <Avatar sx={{ width: 32, height: 32, mr: 2, bgcolor: 'primary.main' }}>
+                          {getUserInitials()}
+                        </Avatar>
+                        <Box>
+                          <Box sx={{ fontWeight: 'bold' }}>{getUserDisplayName()}</Box>
+                          <Box sx={{ fontSize: '0.875rem', color: 'text.secondary' }}>
+                            {user?.email}
+                          </Box>
+                        </Box>
+                      </Box>
+                    </MenuItem>
+                    <Divider sx={{ my: 1 }} />
+                    <MenuItem onClick={handleLogout}>
+                      Cerrar sesión
+                    </MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem>
+                      <Button color="primary" variant="contained" fullWidth onClick={handleSignUp}>
+                        Registrarse
+                      </Button>
+                    </MenuItem>
+                    <MenuItem>
+                      <Button color="primary" variant="outlined" fullWidth onClick={handleSignIn}>
+                        Iniciar sesión
+                      </Button>
+                    </MenuItem>
+                  </>
+                )}
               </Box>
             </Drawer>
           </Box>
