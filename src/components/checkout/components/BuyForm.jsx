@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -21,13 +22,13 @@ const FormGrid = styled(Grid)(() => ({
 }));
 
 const SectionCard = styled(Card)(({ theme }) => ({
-  marginBottom: theme.spacing(4),
+  marginBottom: theme.spacing(2),
   border: '1px solid',
   borderColor: theme.palette.divider,
   boxShadow: theme.shadows[1],
 }));
 
-export default function BuyForm() {
+export default function BuyForm({ onTotalPriceChange }) {
   const [quantity, setQuantity] = React.useState(1);
   const [recipientName, setRecipientName] = React.useState('');
   const [recipientLastName, setRecipientLastName] = React.useState('');
@@ -37,7 +38,14 @@ export default function BuyForm() {
   const [senderLastName, setSenderLastName] = React.useState('');
 
   const unitPrice = 1; // USD
-  const totalPrice = quantity * unitPrice;
+
+  // Calculate total price and notify parent component
+  React.useEffect(() => {
+    const totalPrice = quantity * unitPrice;
+    if (onTotalPriceChange) {
+      onTotalPriceChange(totalPrice);
+    }
+  }, [quantity, unitPrice, onTotalPriceChange]);
 
   const handleQuantityChange = (event) => {
     const value = parseInt(event.target.value);
@@ -68,14 +76,10 @@ export default function BuyForm() {
       mx: 'auto',
       py: 2,
       px: { xs: 2, sm: 3 }
-    }}>
-      <Typography variant="h4" gutterBottom sx={{ mb: 4, textAlign: 'center' }}>
-        Detalle de tu compra
-      </Typography>
-      
+    }}>   
              {/* Sección de Cantidad y Precio */}
        <SectionCard>
-         <CardContent sx={{ p: 3 }}>
+         <CardContent>
            <Grid container spacing={3} alignItems="flex-end">
             <Grid item xs={12} md={6}>
               <FormGrid>
@@ -112,11 +116,11 @@ export default function BuyForm() {
 
              {/* Sección ¿A quién va dirigido? */}
        <SectionCard>
-         <CardContent sx={{ p: 3 }}>
-           <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
+         <CardContent>
+           <Typography variant="h6" gutterBottom sx={{ mb: 1 }}>
              ¿A quién va dirigido?
            </Typography>
-           <Grid container spacing={3} alignItems="flex-end" sx={{ mb: 3 }}>
+           <Grid container spacing={3} alignItems="flex-end" sx={{ mb: 2 }}>
             <Grid item xs={12} md={6}>
               <FormGrid>
                 <FormLabel htmlFor="recipient-name" required>
@@ -172,7 +176,6 @@ export default function BuyForm() {
                   InputProps={{
                     sx: {
                       minHeight: '150px', // Altura mínima garantizada
-
                     },
                   }}
                 />
@@ -182,92 +185,70 @@ export default function BuyForm() {
         </CardContent>
       </SectionCard>
 
-             {/* Sección Remitente */}
+      {/* Sección Remitente */}
        <SectionCard>
-         <CardContent sx={{ p: 3 }}>
-           <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
+         <CardContent>
+           <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
              Remitente
            </Typography>
-           <Grid container spacing={3}>
-            <FormGrid size={{ xs: 12 }}>
-              <FormControlLabel
-                control={
-                  <Checkbox 
-                    checked={isAnonymous}
-                    onChange={handleAnonymousChange}
-                    name="anonymous"
-                  />
-                }
-                label="Envío anónimo"
-              />
-            </FormGrid>
-            
-            {!isAnonymous && (
-              <>
-                <FormGrid size={{ xs: 12, md: 6 }}>
-                  <FormLabel htmlFor="sender-name" required>
-                    Nombre
-                  </FormLabel>
-                  <OutlinedInput
-                    id="sender-name"
-                    name="sender-name"
-                    value={senderName}
-                    onChange={(e) => setSenderName(e.target.value)}
-                    placeholder="Tu nombre"
-                    required
-                    size="small"
-                  />
-                </FormGrid>
-                <FormGrid size={{ xs: 12, md: 6 }}>
-                  <FormLabel htmlFor="sender-lastname" required>
-                    Apellido
-                  </FormLabel>
-                  <OutlinedInput
-                    id="sender-lastname"
-                    name="sender-lastname"
-                    value={senderLastName}
-                    onChange={(e) => setSenderLastName(e.target.value)}
-                    placeholder="Tu apellido"
-                    required
-                    size="small"
-                  />
-                </FormGrid>
-              </>
-            )}
-          </Grid>
+           
+           {/* Checkbox centrado */}
+           <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+             <FormControlLabel
+               control={
+                 <Checkbox 
+                   checked={isAnonymous}
+                   onChange={handleAnonymousChange}
+                   name="anonymous"
+                 />
+               }
+               label="Envío anónimo"
+             />
+           </Box>
+           
+           {/* Campos de nombre y apellido */}
+           {!isAnonymous && (
+             <Grid container spacing={3} alignItems="flex-end">
+               <Grid item xs={12} md={6}>
+                 <FormGrid>
+                   <FormLabel htmlFor="sender-name" required>
+                     Nombre
+                   </FormLabel>
+                   <OutlinedInput
+                     id="sender-name"
+                     name="sender-name"
+                     value={senderName}
+                     onChange={(e) => setSenderName(e.target.value)}
+                     placeholder="Tu nombre"
+                     required
+                     size="small"
+                   />
+                 </FormGrid>
+               </Grid>
+               <Grid item xs={12} md={6}>
+                 <FormGrid>
+                   <FormLabel htmlFor="sender-lastname" required>
+                     Apellido
+                   </FormLabel>
+                   <OutlinedInput
+                     id="sender-lastname"
+                     name="sender-lastname"
+                     value={senderLastName}
+                     onChange={(e) => setSenderLastName(e.target.value)}
+                     placeholder="Tu apellido"
+                     required
+                     size="small"
+                   />
+                 </FormGrid>
+               </Grid>
+             </Grid>
+           )}
         </CardContent>
       </SectionCard>
-
-             {/* Resumen final */}
-       <Card sx={{ 
-         mt: 4, 
-         p: 3, 
-         bgcolor: 'primary.light', 
-         color: 'primary.contrastText',
-         boxShadow: 2
-       }}>
-         <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
-           Resumen de tu pedido
-         </Typography>
-                 <Typography variant="body2" sx={{ mb: 1 }}>
-           Cantidad: {quantity} unidad{quantity > 1 ? 'es' : ''} × ${unitPrice.toFixed(2)} USD = ${totalPrice.toFixed(2)} USD
-         </Typography>
-         {recipientName && recipientLastName && (
-           <Typography variant="body2" sx={{ mb: 1 }}>
-             Destinatario: {recipientName} {recipientLastName}
-           </Typography>
-         )}
-         {!isAnonymous && senderName && senderLastName && (
-           <Typography variant="body2" sx={{ mb: 1 }}>
-             Remitente: {senderName} {senderLastName}
-           </Typography>
-         )}
-         {isAnonymous && (
-           <Typography variant="body2" sx={{ mb: 1 }}>
-             Remitente: Anónimo
-           </Typography>
-         )}
-      </Card>
     </Box>
   );
 }
+
+BuyForm.propTypes = {
+  onTotalPriceChange: PropTypes.func,
+};

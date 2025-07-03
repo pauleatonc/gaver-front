@@ -23,10 +23,10 @@ import AppTheme from '../../shared-theme/AppTheme';
 import ColorModeIconDropdown from '../../shared-theme/ColorModeIconDropdown';
 
 const steps = ['Detalle de compra', 'Dirección de Facturación', 'Detalles de pago', 'Revisar tu pedido'];
-function getStepContent(step) {
+function getStepContent(step, onTotalPriceChange) {
   switch (step) {
     case 0:
-      return <BuyForm />;
+      return <BuyForm onTotalPriceChange={onTotalPriceChange} />;
     case 1:
       return <AddressForm />;
     case 2:
@@ -39,11 +39,17 @@ function getStepContent(step) {
 }
 export default function Checkout(props) {
   const [activeStep, setActiveStep] = React.useState(0);
+  const [totalPrice, setTotalPrice] = React.useState(1.00); // Default unit price
+  
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
   const handleBack = () => {
     setActiveStep(activeStep - 1);
+  };
+  
+  const handleTotalPriceChange = (newTotal) => {
+    setTotalPrice(newTotal);
   };
   return (
     <AppTheme {...props}>
@@ -90,7 +96,7 @@ export default function Checkout(props) {
               maxWidth: 500,
             }}
           >
-            <Info totalPrice={activeStep >= 3 ? '$144.97' : '$134.98'} />
+            <Info totalPrice={`$${totalPrice.toFixed(2)} USD`} />
           </Box>
         </Box>
         <Box
@@ -156,10 +162,10 @@ export default function Checkout(props) {
                   Productos seleccionados
                 </Typography>
                 <Typography variant="body1">
-                  {activeStep >= 3 ? '$144.97' : '$134.98'}
+                  {`$${totalPrice.toFixed(2)} USD`}
                 </Typography>
               </div>
-              <InfoMobile totalPrice={activeStep >= 3 ? '$144.97' : '$134.98'} />
+              <InfoMobile totalPrice={`$${totalPrice.toFixed(2)} USD`} />
             </CardContent>
           </Card>
           <Box
@@ -214,7 +220,7 @@ export default function Checkout(props) {
               </Stack>
             ) : (
               <React.Fragment>
-                {getStepContent(activeStep)}
+                {getStepContent(activeStep, handleTotalPriceChange)}
                 <Box
                   sx={[
                     {
@@ -237,7 +243,10 @@ export default function Checkout(props) {
                       startIcon={<ChevronLeftRoundedIcon />}
                       onClick={handleBack}
                       variant="text"
-                      sx={{ display: { xs: 'none', sm: 'flex' } }}
+                      sx={{ 
+                        display: { xs: 'none', sm: 'flex' },
+                        mb: 4
+                      }}
                     >
                       Anterior
                     </Button>
@@ -248,7 +257,10 @@ export default function Checkout(props) {
                       onClick={handleBack}
                       variant="outlined"
                       fullWidth
-                      sx={{ display: { xs: 'flex', sm: 'none' } }}
+                      sx={{ 
+                        display: { xs: 'flex', sm: 'none' },
+                        mb: 4
+                      }}
                     >
                       Anterior
                     </Button>
@@ -257,7 +269,10 @@ export default function Checkout(props) {
                     variant="contained"
                     endIcon={<ChevronRightRoundedIcon />}
                     onClick={handleNext}
-                    sx={{ width: { xs: '100%', sm: 'fit-content' } }}
+                    sx={{ 
+                      width: { xs: '100%', sm: 'fit-content' },
+                      mb: 4
+                    }}
                   >
                     {activeStep === steps.length - 1 ? 'Realizar pedido' : 'Siguiente'}
                   </Button>
