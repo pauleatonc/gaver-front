@@ -43,7 +43,7 @@ export default function BuyForm({ onTotalPriceChange }) {
   React.useEffect(() => {
     const totalPrice = quantity * unitPrice;
     if (onTotalPriceChange) {
-      onTotalPriceChange(totalPrice);
+      onTotalPriceChange(totalPrice, quantity);
     }
   }, [quantity, unitPrice, onTotalPriceChange]);
 

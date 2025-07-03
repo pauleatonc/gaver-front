@@ -23,7 +23,7 @@ import AppTheme from '../../shared-theme/AppTheme';
 import ColorModeIconDropdown from '../../shared-theme/ColorModeIconDropdown';
 
 const steps = ['Detalle de compra', 'Dirección de Facturación', 'Detalles de pago', 'Revisar tu pedido'];
-function getStepContent(step, onTotalPriceChange) {
+function getStepContent(step, onTotalPriceChange, quantity, unitPrice, totalPrice) {
   switch (step) {
     case 0:
       return <BuyForm onTotalPriceChange={onTotalPriceChange} />;
@@ -32,7 +32,7 @@ function getStepContent(step, onTotalPriceChange) {
     case 2:
       return <PaymentForm />;
     case 3:
-      return <Review />;
+      return <Review quantity={quantity} unitPrice={unitPrice} totalPrice={totalPrice} />;
     default:
       throw new Error('Unknown step');
   }
@@ -40,6 +40,8 @@ function getStepContent(step, onTotalPriceChange) {
 export default function Checkout(props) {
   const [activeStep, setActiveStep] = React.useState(0);
   const [totalPrice, setTotalPrice] = React.useState(1.00); // Default unit price
+  const [quantity, setQuantity] = React.useState(1);
+  const [unitPrice] = React.useState(1.00); // Fixed unit price
   
   const handleNext = () => {
     setActiveStep(activeStep + 1);
@@ -48,8 +50,11 @@ export default function Checkout(props) {
     setActiveStep(activeStep - 1);
   };
   
-  const handleTotalPriceChange = (newTotal) => {
+  const handleTotalPriceChange = (newTotal, newQuantity) => {
     setTotalPrice(newTotal);
+    if (newQuantity !== undefined) {
+      setQuantity(newQuantity);
+    }
   };
   return (
     <AppTheme {...props}>
@@ -220,7 +225,7 @@ export default function Checkout(props) {
               </Stack>
             ) : (
               <React.Fragment>
-                {getStepContent(activeStep, handleTotalPriceChange)}
+                {getStepContent(activeStep, handleTotalPriceChange, quantity, unitPrice, totalPrice)}
                 <Box
                   sx={[
                     {

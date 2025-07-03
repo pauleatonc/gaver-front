@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
@@ -15,18 +16,28 @@ const payments = [
   { name: 'Fecha de vencimiento:', detail: '04/2024' },
 ];
 
-export default function Review() {
+export default function Review({ quantity = 1, unitPrice = 1.00, totalPrice = 1.00 }) {
   return (
     <Stack spacing={2}>
       <List disablePadding>
         <ListItem sx={{ py: 1, px: 0 }}>
-          <ListItemText primary="Productos" secondary="4 seleccionados" />
-          <Typography variant="body2">$134.98</Typography>
+          <ListItemText 
+            primary="Precio unitario" 
+            secondary="Por hectárea" 
+          />
+          <Typography variant="body2">${unitPrice.toFixed(2)} USD</Typography>
+        </ListItem>
+        <ListItem sx={{ py: 1, px: 0 }}>
+          <ListItemText 
+            primary="Cantidad" 
+            secondary="Hectáreas seleccionadas" 
+          />
+          <Typography variant="body2">{quantity}</Typography>
         </ListItem>
         <ListItem sx={{ py: 1, px: 0 }}>
           <ListItemText primary="Total" />
           <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-            $144.97
+            ${totalPrice.toFixed(2)} USD
           </Typography>
         </ListItem>
       </List>
@@ -72,3 +83,9 @@ export default function Review() {
     </Stack>
   );
 }
+
+Review.propTypes = {
+  quantity: PropTypes.number,
+  unitPrice: PropTypes.number,
+  totalPrice: PropTypes.number,
+};
