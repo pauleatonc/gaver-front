@@ -174,7 +174,7 @@ export default function SignUp(props) {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+      event.preventDefault();
     
     if (!validateInputs()) {
       return;

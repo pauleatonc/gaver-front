@@ -4,7 +4,10 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import Grid from '@mui/material/Grid';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 import { styled } from '@mui/material/styles';
+import { useGeographicData } from '../../../hooks/useGeographicData';
 
 const FormGrid = styled(Grid)(() => ({
   display: 'flex',
@@ -14,6 +17,20 @@ const FormGrid = styled(Grid)(() => ({
 }));
 
 export default function AddressForm() {
+  const {
+    countries,
+    states,
+    cities,
+    selectedCountry,
+    selectedState,
+    selectedCity,
+    handleCountryChange,
+    handleStateChange,
+    handleCityChange,
+    isStateDisabled,
+    isCityDisabled,
+  } = useGeographicData();
+
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} md={6}>
@@ -83,14 +100,35 @@ export default function AddressForm() {
           <FormLabel htmlFor="country" required>
             País
           </FormLabel>
-          <OutlinedInput
+          <Autocomplete
             id="country"
-            name="country"
-            type="country"
-            placeholder="España"
-            autoComplete="shipping country"
-            required
+            options={countries}
+            getOptionLabel={(option) => option.label}
+            value={selectedCountry}
+            onChange={(event, newValue) => handleCountryChange(newValue)}
             size="small"
+            sx={{
+              '& .MuiAutocomplete-popupIndicator': {
+                padding: '4px',
+                height: '100%',
+                '& .MuiSvgIcon-root': {
+                  fontSize: '1rem',
+                },
+              },
+              '& .MuiAutocomplete-endAdornment': {
+                right: '6px',
+              },
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder="Selecciona un país"
+                size="small"
+                required
+              />
+            )}
+            noOptionsText="No hay países disponibles"
+            loadingText="Cargando países..."
           />
         </FormGrid>
       </Grid>
@@ -99,14 +137,36 @@ export default function AddressForm() {
           <FormLabel htmlFor="state" required>
             Región/Provincia
           </FormLabel>
-          <OutlinedInput
+          <Autocomplete
             id="state"
-            name="state"
-            type="state"
-            placeholder="Madrid"
-            autoComplete="State"
-            required
+            options={states}
+            getOptionLabel={(option) => option.label}
+            value={selectedState}
+            onChange={(event, newValue) => handleStateChange(newValue)}
+            disabled={isStateDisabled}
             size="small"
+            sx={{
+              '& .MuiAutocomplete-popupIndicator': {
+                padding: '4px',
+                height: '100%',
+                '& .MuiSvgIcon-root': {
+                  fontSize: '1rem',
+                },
+              },
+              '& .MuiAutocomplete-endAdornment': {
+                right: '6px',
+              },
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder={isStateDisabled ? "Primero selecciona un país" : "Selecciona una región/provincia"}
+                size="small"
+                required
+              />
+            )}
+            noOptionsText="No hay regiones/provincias disponibles"
+            loadingText="Cargando regiones/provincias..."
           />
         </FormGrid>
       </Grid>
@@ -115,14 +175,36 @@ export default function AddressForm() {
           <FormLabel htmlFor="city" required>
             Ciudad
           </FormLabel>
-          <OutlinedInput
+          <Autocomplete
             id="city"
-            name="city"
-            type="city"
-            placeholder="Madrid"
-            autoComplete="City"
-            required
+            options={cities}
+            getOptionLabel={(option) => option.label}
+            value={selectedCity}
+            onChange={(event, newValue) => handleCityChange(newValue)}
+            disabled={isCityDisabled}
             size="small"
+            sx={{
+              '& .MuiAutocomplete-popupIndicator': {
+                padding: '4px',
+                height: '100%',
+                '& .MuiSvgIcon-root': {
+                  fontSize: '1rem',
+                },
+              },
+              '& .MuiAutocomplete-endAdornment': {
+                right: '6px',
+              },
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder={isCityDisabled ? "Primero selecciona país y región/provincia" : "Selecciona una ciudad"}
+                size="small"
+                required
+              />
+            )}
+            noOptionsText="No hay ciudades disponibles"
+            loadingText="Cargando ciudades..."
           />
         </FormGrid>
       </Grid>
@@ -139,14 +221,6 @@ export default function AddressForm() {
             autoComplete="shipping postal-code"
             required
             size="small"
-          />
-        </FormGrid>
-      </Grid>
-      <Grid item xs={12}>
-        <FormGrid>
-          <FormControlLabel
-            control={<Checkbox name="saveAddress" value="yes" />}
-            label="Usar esta dirección para los detalles de pago"
           />
         </FormGrid>
       </Grid>

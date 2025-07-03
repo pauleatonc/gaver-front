@@ -240,12 +240,12 @@ export default function AppAppBar() {
               </>
             ) : (
               <>
-                <Button color="primary" variant="text" size="small" onClick={handleSignIn}>
+            <Button color="primary" variant="text" size="small" onClick={handleSignIn}>
                   Iniciar sesión
-                </Button>
-                <Button color="primary" variant="contained" size="small" onClick={handleSignUp}>
+            </Button>
+            <Button color="primary" variant="contained" size="small" onClick={handleSignUp}>
                   Registrarse
-                </Button>
+            </Button>
               </>
             )}
             <ColorModeIconDropdown />
@@ -306,16 +306,16 @@ export default function AppAppBar() {
                   </>
                 ) : (
                   <>
-                    <MenuItem>
-                      <Button color="primary" variant="contained" fullWidth onClick={handleSignUp}>
+                <MenuItem>
+                  <Button color="primary" variant="contained" fullWidth onClick={handleSignUp}>
                         Registrarse
-                      </Button>
-                    </MenuItem>
-                    <MenuItem>
-                      <Button color="primary" variant="outlined" fullWidth onClick={handleSignIn}>
+                  </Button>
+                </MenuItem>
+                <MenuItem>
+                  <Button color="primary" variant="outlined" fullWidth onClick={handleSignIn}>
                         Iniciar sesión
-                      </Button>
-                    </MenuItem>
+                  </Button>
+                </MenuItem>
                   </>
                 )}
               </Box>

@@ -50,10 +50,10 @@ export const useAuth = () => {
       if (response.success && response.token) {
         localStorage.setItem('authToken', response.token);
         localStorage.setItem('authUser', JSON.stringify(response.user));
-        setIsAuthenticated(true);
+      setIsAuthenticated(true);
         setUser(response.user);
         setLoading(false);
-        return { success: true };
+      return { success: true };
       } else {
         setError(response.message || 'Error en registro');
         setLoading(false);
